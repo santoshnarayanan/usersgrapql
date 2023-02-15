@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const {  GraphQLObjectType, GraphQLString, GraphQLInt } = graphql;
+const {  GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphql;
 
 //hard coded list of users
 const users = [
@@ -27,4 +27,8 @@ const RootQuery = new GraphQLObjectType({
             }
         }
     }
+});
+
+module.exports = new GraphQLSchema({
+   query:RootQuery
 });
