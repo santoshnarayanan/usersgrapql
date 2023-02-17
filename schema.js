@@ -8,7 +8,7 @@ const users = [
     {id: "47", firstName: 'Samantha', age: 21},
     {id: "50", firstName: 'Jack', age: 28}
 ];
-const usersUrl = 'http://localhost:3000';
+const url = 'http://localhost:3000';
 
 const  CompanyType = new GraphQLObjectType({
     name:'Company',
@@ -28,20 +28,28 @@ const UserType = new GraphQLObjectType({
         company:{
             type:CompanyType,
             resolve(parentValue, args){
-                return axios.get(`${usersUrl}/companies/${parentValue.companyId}`)
+                return axios.get(`${url}/companies/${parentValue.companyId}`)
                 .then(res => res.data);
             }
         }
     }});
 
 const RootQuery = new GraphQLObjectType({
-    name:'RootQueryType',
+    name: 'RootQueryType',
     fields: {
-        user:{
-          type: UserType,
-          args:{id: {type: GraphQLString}},
-            resolve(parentValue, args){
-                return axios.get(`${usersUrl}/users/${args.id}`)
+        user: {
+            type: UserType,
+            args: {id: {type: GraphQLString}},
+            resolve(parentValue, args) {
+                return axios.get(`${url}/users/${args.id}`)
+                    .then(resp => resp.data);
+            }
+        },
+        company: {
+            type: CompanyType,
+            args: {id: {type: GraphQLString}},
+            resolve(parentValue, args) {
+                return axios.get(`${url}/companies/${args.id}`)
                     .then(resp => resp.data);
             }
         }
