@@ -1,12 +1,16 @@
 const graphql = require('graphql');
 const axios = require("axios");
+
+//include helper objects which we are using in source code
 const {  GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
     GraphQLSchema,
-    GraphQLList} = graphql;
+    GraphQLList,
+    GraphQLNonNull
+} = graphql;
 
-//hard coded list of users
+//hard coded list of users -- to be deleted  as it is replaced by json-server
 const users = [
     {id: "23", firstName: 'Bill', age: 20},
     {id: "47", firstName: 'Samantha', age: 21},
@@ -68,6 +72,25 @@ const RootQuery = new GraphQLObjectType({
     }
 });
 
+const mutation  = new GraphQLObjectType({
+    name:'Mutation',
+    fields:{
+        addUser:{
+           type: UserType ,
+           args: {
+               firstName:{type:new GraphQLNonNull(GraphQLString)},
+               age:{type:new GraphQLNonNull(GraphQLInt)},
+               companyId:{type:GraphQLString}
+           } ,
+           resolve(parentValue, {firstName, age}){
+                return axios.post(`${url}/users`,{ firstName, age })
+                .then(res => res.data);
+           }
+        }
+    }
+});
+
 module.exports = new GraphQLSchema({
-   query:RootQuery
+   query:RootQuery,
+   mutation: mutation
 });
